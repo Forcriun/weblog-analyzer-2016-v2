@@ -2,17 +2,32 @@ import java.io.File;
 import java.util.Scanner;
 import java.util.ArrayList;
 
+/**
+ * Clase que representa objetos capaces de leer, analizar y procesar datos de registros de acceso a
+ * un servidor web.
+ *
+ * @author Didac Fernandez Fernandez
+ * @version 2018-03-06
+ */
 public class AnalizadorAccesosAServidor
 {
     private ArrayList<Acceso> accesos;
     
     
+    /**
+     * Constructor de objetos de la clase AnalizadorAccesosAServidor
+     */
     public AnalizadorAccesosAServidor() 
     {
         accesos = new ArrayList<>();
     }
-    
-    
+        
+    /**
+     * Metodo que lee y analiza un archivo de log indicado por parametro. El 
+     * archivo debe estar almacenado en el directorio del proyecto.
+     * 
+     * @param log El nombre del archivo
+     */
     public void analizarArchivoDeLog(String archivo)
     {
         accesos.clear();
@@ -20,13 +35,8 @@ public class AnalizadorAccesosAServidor
         try {
             Scanner sc = new Scanner(archivoALeer);
             while (sc.hasNextLine()) {
-                String lineaLeida = sc.nextLine();               
-                String[] elementosLinea = lineaLeida.split(" ");
-                Acceso accesoActual = new Acceso(Integer.parseInt(elementosLinea[0]), 
-                                                 Integer.parseInt(elementosLinea[1]), 
-                                                 Integer.parseInt(elementosLinea[2]),
-                                                 Integer.parseInt(elementosLinea[3]), 
-                                                 Integer.parseInt(elementosLinea[4]));               
+                // Pasa como argumento del constructor la siguiente entrada en el log             
+                Acceso accesoActual = new Acceso(sc.nextLine());
                 
                 accesos.add(accesoActual);
             }
@@ -37,7 +47,12 @@ public class AnalizadorAccesosAServidor
         }
     }
     
-    
+    /**
+     * Metodo que devuelve la hora a la que se producen mas accesos al
+     * servidor. En caso de empate devuelve la hora mas alta.
+     *
+     * @return    La hora con mas accesos. Si no hay datos en el registro devuelve -1
+     */
     public int obtenerHoraMasAccesos() 
     {
         int valorADevolver = -1;
