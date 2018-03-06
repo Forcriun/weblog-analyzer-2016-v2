@@ -122,9 +122,49 @@ public class AnalizadorAccesosAServidor
         return aDevolver;
     }
 
+    /**
+     * Metodo que devuelve la pagina web mas solicitada por los clientes. 
+     * En caso de empate devuelve la IP mas alta.
+     *
+     * @return    Una cadena con la direccion IP del cliente. Si no hay datos en el registro devuelve null.
+     */
     public String clienteConMasAccesosExitosos()
     {
-        return "";
+        String aDevolver = null;
+
+        // Crea un HashMap para organizar los accesos exitosos
+        HashMap<String,Integer> mapaAccesosExitosos = new HashMap<>();
+
+        if(!accesos.isEmpty()){
+            for(Acceso accesoActual : accesos){
+                if(accesoActual.getHttp() == 200){
+                    // Si la IP del cliente ya existe en el mapa actualiza el numero de accesos
+                    if(mapaAccesosExitosos.containsKey(accesoActual.getIp())){
+                        mapaAccesosExitosos.replace(accesoActual.getIp(),mapaAccesosExitosos.get(accesoActual.getIp()) + 1);
+                    }
+                    // En caso contrario crea una nueva entrada para esa IP
+                    else{
+                        mapaAccesosExitosos.put(accesoActual.getIp(),1);
+                    }
+                }
+            }
+
+            // Una vez organizados los datos busca la Ip con mas accesos exitosos
+            int maximoAccesosExitosos = 0;            
+            aDevolver = "192.168.1.0";  // Asigna un valor limite para poder comparar IPs con un valor no nulo
+
+            for(String Ip : mapaAccesosExitosos.keySet()){
+                if((Ip.compareTo(aDevolver) > 0 && mapaAccesosExitosos.get(Ip) >= maximoAccesosExitosos) || mapaAccesosExitosos.get(Ip) > maximoAccesosExitosos){
+                    maximoAccesosExitosos = mapaAccesosExitosos.get(Ip);
+                    aDevolver = Ip;
+                }
+            }
+        }
+        else{
+            System.out.println("No existen datos de acceso al servidor");
+        }
+
+        return aDevolver;
     }
 
 }
